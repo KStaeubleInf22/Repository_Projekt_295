@@ -1,0 +1,23 @@
+.confS{
+    background-color: rgb(152, 137, 137);
+}
+.deleteS{
+    background-color: rgb(255, 65, 65);
+}
+.editS{
+    background-color: rgb(167, 138, 186);
+}
+.confTrue{
+    background-color: rgb(0, 255, 55);
+}
+.Log{
+    position: fixed;
+      right: 0;
+      bottom: 0;
+      background-color: black;
+      color: white;
+      padding: 10px;
+      z-index: 9999;
+      font-size: 35px;
+      text-align: center;
+}

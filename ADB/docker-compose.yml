@@ -1,0 +1,42 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ADB_mysql_db_test # Eindeutiger Name für MySQL-Container
+    env_file:
+      - .env # Umgebungsvariablen für MySQL (Passwort, DB-Name)
+    volumes:
+      - db_data:/var/lib/mysql # Persistente Speicherung der MySQL-Daten
+    networks:
+      - ADB-network # Netzwerk für die Kommunikation der Dienste
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ADB_phpmyadmin_ui_test # Eindeutiger Name für phpMyAdmin
+    depends_on:
+      - mysql # Stellt sicher, dass MySQL vor phpMyAdmin startet
+    env_file:
+      - .env # Nutzt dieselben Umgebungsvariablen wie MySQL
+    ports:
+      - "8080:80" # Port-Mapping: Host-Port 8080 auf Container-Port 80
+    networks:
+      - ADB-network
+
+  php:
+    build: . # Baut das Docker-Image basierend auf dem Dockerfile im aktuellen Verzeichnis
+    container_name: ADB_php_app_test # Eindeutiger Name für den PHP/Apache-Container
+    volumes:
+      - ./public:/var/www/html # Mappt den lokalen 'public'-Ordner als Web-Root im Container
+      - ./000-default.conf:/etc/apache2/sites-available/000-default.conf # Mappt die Apache-Konfiguration
+    ports:
+      - "80:80" # Port-Mapping: Host-Port 80 auf Container-Port 80
+    depends_on:
+      - mysql # Stellt sicher, dass MySQL vor PHP startet
+    networks:
+      - ADB-network
+
+volumes:
+  db_data: # Definiert das Volume für die MySQL-Datenpersistenz
+
+networks:
+  ADB-network: # Definiert ein internes Netzwerk für die Dienste
+    driver: bridge
